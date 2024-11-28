@@ -15,6 +15,7 @@ urlpatterns = [
     path("about/", views.about, name="about"),
     path("contact/", views.contact_view, name="contact"),
     path("cart/", views.CartView.as_view(), name="cart"),
+    path("process_request/", views.process_request, name="process_request"),
 ]
 
  

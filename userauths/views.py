@@ -16,11 +16,8 @@ def register_view(request):
             new_user = form.save()
             username = form.cleaned_data.get("username")
             messages.success(request, f"hey {username}, your account was create susessfuly")
-            new_user = authenticate(username=form.cleaned_data['email'],
-                                    password=form.cleaned_data['password1']
-            )
-            login(request, new_user)
-            return redirect('core:home')
+
+            return redirect('userauths:signin')
     else:
         form = UserRegisterForm()
 

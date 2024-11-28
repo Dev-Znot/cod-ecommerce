@@ -1,103 +1,63 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://unpkg.com/bs-brain@2.0.3/components/logins/login-12/assets/css/login-12.css">
+
+{% block page_title %}CarryNation{% endblock page_title %}
+
+{% block extra_head %}
   <link rel="stylesheet" href="{% static 'userauths/css/styles.css' %}">
-  <title>Sign in</title>
-</head>
-<body>
-  <section class="py-3 py-md-5 py-xl-8">
-    <div class="container">
-      <div class="row">
-        <div class="col-12">
-          <div class="mb-5">
-            <h2 class="display-5 fw-bold text-center">Sign in</h2>
-            <p class="text-center m-0">Não tem uma conta? <a href="{% url "userauths:signup" %}">Sign up</a></p>
-          </div>
+{% endblock extra_head %}
+
+{% block content %}
+
+  <section id="sign">
+    <div class="form-container">
+      <p class="title">Sign in</p>
+      <form class="form" method="POST" action="{% url "userauths:signin" %}"> {% csrf_token %}
+        <div class="input-group">
+          <label for="Email">Email</label>
+          <input type="text" placeholder="Email" name="email" id="email">
+          {% if form.errors.username %}
+              <span class="error-message small">{{form.errors.username.0}}</span>
+          {% endif %}
         </div>
-      </div>
-      <div class="row justify-content-center">
-        <div class="col-12 col-lg-10 col-xl-8">
-          <div class="row gy-5 justify-content-center">
-            <div class="col-12 col-lg-5">
-              <form action="{% url "userauths:signin" %}" method="POST"> {% csrf_token %}
-                <div class="row gy-3 overflow-hidden">
-                  <div class="col-12">
-                    <div class="form-floating mb-3">
-                      <input class="form-control border-0 border-bottom rounded-0" type="text" required name="email" id="email">
-                      <label for="username" class="form-label">Username or Email</label>                    
-                    </div>
-                  </div>                  
-                  <div class="col-12">
-                    <div class="form-floating mb-3">
-                      <input class="form-control border-0 border-bottom rounded-0" type="password" required name="password" id="password">
-                      <label for="password" class="form-label">Password</label>                      
-                    </div>
-                  </div>                  
-                  <div class="col-12">
-                    <div class="row justify-content-between">
-                      <div class="col-6">
-                        <div class="form-check">
-                          <input class="form-check-input" type="checkbox" value="" name="remember_me" id="remember_me">
-                          <label class="form-check-label text-secondary" for="remember_me">
-                            Remember me
-                          </label>
-                        </div>
-                      </div>
-                      <div class="col-6">
-                        <div class="text-end">
-                          <a href="#!" class="link-secondary text-decoration-none">Forgot password?</a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-12">
-                    <div class="d-grid">
-                      <button class="btn btn-lg btn-dark rounded-0 fs-6" type="submit">Log in</button>
-                    </div>
-                  </div>
-                </div>
-              </form>
+        <div class="input-group">
+          <label for="password">Password</label>
+          <input type="password" placeholder="Password" name="password" id="password">
+          {% if form.errors.password1 %}
+              <span class="error-message small">{{form.errors.password1.0}}</span>
+          {% endif %}
+            <div class="forgot">
+              <a rel="noopener noreferrer" href="#">Forgot Password ?</a>
             </div>
-            <div class="col-12 col-lg-2 d-flex align-items-center justify-content-center gap-3 flex-lg-column">
-              <div class="bg-dark h-100 d-none d-lg-block" style="width: 1px; --bs-bg-opacity: .1;"></div>
-              <div class="bg-dark w-100 d-lg-none" style="height: 1px; --bs-bg-opacity: .1;"></div>
-              <div>or</div>
-              <div class="bg-dark h-100 d-none d-lg-block" style="width: 1px; --bs-bg-opacity: .1;"></div>
-              <div class="bg-dark w-100 d-lg-none" style="height: 1px; --bs-bg-opacity: .1;"></div>
-            </div>
-            <div class="col-12 col-lg-5 d-flex align-items-center">
-              <div class="d-flex gap-3 flex-column w-100 ">
-                <a href="#!" class="btn bsb-btn-2xl btn-outline-dark rounded-0 d-flex align-items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-google text-danger" viewBox="0 0 16 16">
-                    <path d="M15.545 6.558a9.42 9.42 0 0 1 .139 1.626c0 2.434-.87 4.492-2.384 5.885h.002C11.978 15.292 10.158 16 8 16A8 8 0 1 1 8 0a7.689 7.689 0 0 1 5.352 2.082l-2.284 2.284A4.347 4.347 0 0 0 8 3.166c-2.087 0-3.86 1.408-4.492 3.304a4.792 4.792 0 0 0 0 3.063h.003c.635 1.893 2.405 3.301 4.492 3.301 1.078 0 2.004-.276 2.722-.764h-.003a3.702 3.702 0 0 0 1.599-2.431H8v-3.08h7.545z" />
-                  </svg>
-                  <span class="ms-2 fs-6 flex-grow-1">Continue with Google</span>
-                </a>
-                <a href="#!" class="btn bsb-btn-2xl btn-outline-dark rounded-0 d-flex align-items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-apple text-dark" viewBox="0 0 16 16">
-                    <path d="M11.182.008C11.148-.03 9.923.023 8.857 1.18c-1.066 1.156-.902 2.482-.878 2.516.024.034 1.52.087 2.475-1.258.955-1.345.762-2.391.728-2.43Zm3.314 11.733c-.048-.096-2.325-1.234-2.113-3.422.212-2.189 1.675-2.789 1.698-2.854.023-.065-.597-.79-1.254-1.157a3.692 3.692 0 0 0-1.563-.434c-.108-.003-.483-.095-1.254.116-.508.139-1.653.589-1.968.607-.316.018-1.256-.522-2.267-.665-.647-.125-1.333.131-1.824.328-.49.196-1.422.754-2.074 2.237-.652 1.482-.311 3.83-.067 4.56.244.729.625 1.924 1.273 2.796.576.984 1.34 1.667 1.659 1.899.319.232 1.219.386 1.843.067.502-.308 1.408-.485 1.766-.472.357.013 1.061.154 1.782.539.571.197 1.111.115 1.652-.105.541-.221 1.324-1.059 2.238-2.758.347-.79.505-1.217.473-1.282Z" />
-                    <path d="M11.182.008C11.148-.03 9.923.023 8.857 1.18c-1.066 1.156-.902 2.482-.878 2.516.024.034 1.52.087 2.475-1.258.955-1.345.762-2.391.728-2.43Zm3.314 11.733c-.048-.096-2.325-1.234-2.113-3.422.212-2.189 1.675-2.789 1.698-2.854.023-.065-.597-.79-1.254-1.157a3.692 3.692 0 0 0-1.563-.434c-.108-.003-.483-.095-1.254.116-.508.139-1.653.589-1.968.607-.316.018-1.256-.522-2.267-.665-.647-.125-1.333.131-1.824.328-.49.196-1.422.754-2.074 2.237-.652 1.482-.311 3.83-.067 4.56.244.729.625 1.924 1.273 2.796.576.984 1.34 1.667 1.659 1.899.319.232 1.219.386 1.843.067.502-.308 1.408-.485 1.766-.472.357.013 1.061.154 1.782.539.571.197 1.111.115 1.652-.105.541-.221 1.324-1.059 2.238-2.758.347-.79.505-1.217.473-1.282Z" />
-                  </svg>
-                  <span class="ms-2 fs-6 flex-grow-1">Continue with Apple</span>
-                </a>
-                <a href="#!" class="btn bsb-btn-2xl btn-outline-dark rounded-0 d-flex align-items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-facebook text-primary" viewBox="0 0 16 16">
-                    <path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951z" />
-                  </svg>
-                  <span class="ms-2 fs-6 flex-grow-1">Continue with Facebook</span>
-                </a>
-              </div>
-            </div>
-          </div>
         </div>
+        <button type="submit" class="sign">Sign in</button>
+      </form>
+      <div class="social-message">
+        <div class="line"></div>
+        <p class="message">Login with social accounts</p>
+        <div class="line"></div>
       </div>
+      <div class="social-icons">
+        <button aria-label="Log in with Google" class="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" class="w-5 h-5 fill-current">
+            <path d="M16.318 13.714v5.484h9.078c-0.37 2.354-2.745 6.901-9.078 6.901-5.458 0-9.917-4.521-9.917-10.099s4.458-10.099 9.917-10.099c3.109 0 5.193 1.318 6.38 2.464l4.339-4.182c-2.786-2.599-6.396-4.182-10.719-4.182-8.844 0-16 7.151-16 16s7.156 16 16 16c9.234 0 15.365-6.49 15.365-15.635 0-1.052-0.115-1.854-0.255-2.651z"></path>
+          </svg>
+        </button>
+        <button aria-label="Log in with Twitter" class="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" class="w-5 h-5 fill-current">
+            <path d="M31.937 6.093c-1.177 0.516-2.437 0.871-3.765 1.032 1.355-0.813 2.391-2.099 2.885-3.631-1.271 0.74-2.677 1.276-4.172 1.579-1.192-1.276-2.896-2.079-4.787-2.079-3.625 0-6.563 2.937-6.563 6.557 0 0.521 0.063 1.021 0.172 1.495-5.453-0.255-10.287-2.875-13.52-6.833-0.568 0.964-0.891 2.084-0.891 3.303 0 2.281 1.161 4.281 2.916 5.457-1.073-0.031-2.083-0.328-2.968-0.817v0.079c0 3.181 2.26 5.833 5.26 6.437-0.547 0.145-1.131 0.229-1.724 0.229-0.421 0-0.823-0.041-1.224-0.115 0.844 2.604 3.26 4.5 6.14 4.557-2.239 1.755-5.077 2.801-8.135 2.801-0.521 0-1.041-0.025-1.563-0.088 2.917 1.86 6.36 2.948 10.079 2.948 12.067 0 18.661-9.995 18.661-18.651 0-0.276 0-0.557-0.021-0.839 1.287-0.917 2.401-2.079 3.281-3.396z"></path>
+          </svg>
+        </button>
+        <button aria-label="Log in with GitHub" class="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" class="w-5 h-5 fill-current">
+            <path d="M16 0.396c-8.839 0-16 7.167-16 16 0 7.073 4.584 13.068 10.937 15.183 0.803 0.151 1.093-0.344 1.093-0.772 0-0.38-0.009-1.385-0.015-2.719-4.453 0.964-5.391-2.151-5.391-2.151-0.729-1.844-1.781-2.339-1.781-2.339-1.448-0.989 0.115-0.968 0.115-0.968 1.604 0.109 2.448 1.645 2.448 1.645 1.427 2.448 3.744 1.74 4.661 1.328 0.14-1.031 0.557-1.74 1.011-2.135-3.552-0.401-7.287-1.776-7.287-7.907 0-1.751 0.62-3.177 1.645-4.297-0.177-0.401-0.719-2.031 0.141-4.235 0 0 1.339-0.427 4.4 1.641 1.281-0.355 2.641-0.532 4-0.541 1.36 0.009 2.719 0.187 4 0.541 3.043-2.068 4.381-1.641 4.381-1.641 0.859 2.204 0.317 3.833 0.161 4.235 1.015 1.12 1.635 2.547 1.635 4.297 0 6.145-3.74 7.5-7.296 7.891 0.556 0.479 1.077 1.464 1.077 2.959 0 2.14-0.020 3.864-0.020 4.385 0 0.416 0.28 0.916 1.104 0.755 6.4-2.093 10.979-8.093 10.979-15.156 0-8.833-7.161-16-16-16z"></path>
+          </svg>
+        </button>
+      </div>
+      <p class="signup">Don't have an account?
+        <a rel="noopener noreferrer" href="{% url "userauths:signup" %}" class="">Sign up</a>
+      </p>
     </div>
   </section>
-</body>
-</html>
+           
+{% endblock content %}

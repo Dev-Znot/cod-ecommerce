@@ -15,6 +15,7 @@ STATUS_CHOICE = (
     ("shipped", "Shipped"),
     ("delivered", "Delivered"),
 )
+
 STATUS = (
     ("draft", "Draft"),
     ("disabled", "Disabled"),
@@ -22,6 +23,18 @@ STATUS = (
     ("in review", "In Review"),
     ("published", "Published"),
 )
+
+PAY = (
+    ("in review", "In Review"),
+    ("Ready", "Ready"),
+)
+
+PROGRESS = (
+    ("In Analysis", "In Analysis"),
+    ("In Progress", "In Progress"),
+    ("Finish", "Finish"),
+)
+
 RATING = (
     (1 , "★☆☆☆☆"),
     (2 , "★★☆☆☆"),
@@ -38,7 +51,7 @@ def user_directory_path(instance, filename):
 class Category(models.Model):
     cid = ShortUUIDField(unique=True, length=10, max_length=20, prefix="cat", alphabet="abcdefghi1234")
     title = models.CharField(max_length=100, default="Jewelery")
-    image = models.ImageField(upload_to=user_directory_path, default="category.jpg")
+    image = models.ImageField(upload_to=user_directory_path, null=True, blank=True, default="category.jpg")
 
     class Meta:
         verbose_name_plural = "Categories"
@@ -92,7 +105,6 @@ class Product(models.Model):
 
     price = models.DecimalField(max_digits=10, decimal_places=2, default="1.99")
     old_price = models.DecimalField(max_digits=10, decimal_places=2, default="2.99", null=True, blank=True)
-    freight = models.DecimalField(max_digits=10, decimal_places=2, null=False, blank=False)
 
     specifications = models.TextField(null=True, blank=True)
  #   tags = models.ForeignKey(Tags, on_delete=models.SET_NULL, null=True)
@@ -100,10 +112,9 @@ class Product(models.Model):
     product_status = models.CharField(max_length=10, choices=STATUS, default="in review")
 
     status = models.BooleanField(default=True)
-    in_stock = models.BooleanField(default=True)
     featured = models.BooleanField(default=False)
-    new = models.BooleanField(default=False)
-    digital = models.BooleanField(default=False)
+    promotion = models.BooleanField(default=False)
+
     
     sku = ShortUUIDField(unique=True, length=4, max_length=10, prefix="sku", alphabet="abcdefghi1234")
 
@@ -122,8 +133,6 @@ class Product(models.Model):
     def get_porcentage(self):
         new_price = (self.price / self.old_price) * 100
         return new_price
-
-
 
 class Productimages(models.Model):
     images = models.ImageField(upload_to="products-images", default="products.jpg")
@@ -145,7 +154,6 @@ class Coupons(models.Model):
         if not self.series:
             self.series = random.randint(1000, 9999)
         super().save(*args, **kwargs)
-
 
 class CartOrder(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -216,6 +224,7 @@ class Address(models.Model):
 
 #################################### Blog #######################################################
 
+
 class Blog(models.Model):
     image = models.ImageField(upload_to="blog/", null=False)
     title = models.CharField(max_length=50)
@@ -236,8 +245,17 @@ class Contact(models.Model):
     def __str__(self):
         return self.name
     
+class Requested(models.Model):
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    itens = models.JSONField() 
+    preco_total = models.DecimalField(max_digits=10, decimal_places=2)
+    criado_em = models.DateTimeField(auto_now_add=True)
 
+    payment_status = models.CharField(max_length=10, choices=PAY, default="in review")
+    progress_status = models.CharField(max_length=12, choices=PROGRESS, default="in Analysis")
 
+    def __str__(self):
+        return f"requested #{self.id} of {self.usuario.username}"
 
 
 

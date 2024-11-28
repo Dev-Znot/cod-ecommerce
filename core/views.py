@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.generic import (
     ListView,
@@ -17,6 +18,7 @@ from .models import (
     Address,
     Blog,
     Contact,
+    Requested
     )
 
 import json
@@ -34,7 +36,7 @@ class HomeView(ListView):
         context = super().get_context_data(**kwargs)
 
         context['feat_list'] = Product.objects.filter(product_status="published", featured=True)
-        context['new_list'] = Product.objects.filter(product_status="published", new=True)
+        context['new_list'] = Product.objects.filter(product_status="published", promotion=True)
 
         return context
 
@@ -89,29 +91,23 @@ def contact_view(request):
         return redirect("core:home")
 
 class CartView(View):
+
     def get(self, request):
 
         prod_cart = []
-        all_freight = []
 
         if 'cart' in request.session and request.session['cart']:
             for i in request.session['cart']:
                 prod = Product.objects.get(pk=i)
                 prod_cart.append(prod)
 
-                freight_value = prod.freight
-                all_freight.append(freight_value)
-
-            freight = sum(all_freight)
 
             context = {
                 "prod_cart":prod_cart,
-                "freight":freight,
             }
         else:
             context = {
                 "prod_cart":[],
-                "freight":0
             }  
 
         return render(request, 'cart/index.html', context)
@@ -152,7 +148,25 @@ class CartView(View):
 
         return redirect('core:cart')
 
+@login_required
+def process_request(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            itens = data.get('itens', [])
+            preco_total = data.get('preco_total', 0)
 
+            # Salva o pedido no banco de dados
+            pedido = Requested.objects.create(
+                usuario=request.user,
+                itens=itens,
+                preco_total=preco_total
+            )
+
+            return JsonResponse({'status': 'success', 'pedido_id': pedido.id})
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
 
 
 
